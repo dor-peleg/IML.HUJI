@@ -36,10 +36,10 @@ def misclassification_error(y_true: np.ndarray, y_pred: np.ndarray, normalize: b
     Misclassification of given predictions
     """
 
-    mult = np.where(y_true == y_pred, 0, 1)
+    misclassification_vec = np.where(y_true == y_pred, 0, 1)
     if normalize:
-        return sum(mult) / y_true.size
-    return sum(mult)
+        return sum(misclassification_vec) / y_true.size
+    return sum(misclassification_vec)
 
 
 def accuracy(y_true: np.ndarray, y_pred: np.ndarray) -> float:
