@@ -137,7 +137,6 @@ class GradientDescent:
             self.callback_(f.compute_output(X, y), w_t.copy(), self.learning_rate_.lr_step(t))
             t += 1
 
-        print(t)
         if self.out_type_ == "last":
             return w_t
         elif self.out_type_ == "average":
