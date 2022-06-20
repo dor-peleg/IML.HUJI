@@ -8,7 +8,7 @@ from .learning_rate import FixedLR
 OUTPUT_VECTOR_TYPE = ["last", "best", "average"]
 
 
-def default_callback(**kwargs) -> NoReturn:
+def default_callback(*kargs) -> NoReturn:
     pass
 
 
@@ -119,4 +119,33 @@ class GradientDescent:
                 Euclidean norm of w^(t)-w^(t-1)
 
         """
-        raise NotImplementedError()
+        t = 1
+        prev_w_t = np.zeros(f.weights.shape)
+        w_t = f.weights
+        # print(w_t)
+        w_sum = np.zeros(f.weights.shape)
+        best_w = [w_t, f.compute_output(X, y)]
+        self.callback_(f.compute_output(X, y), w_t.copy(), self.learning_rate_.lr_step(t))
+        while t <= self.max_iter_ and np.linalg.norm(w_t - prev_w_t) > self.tol_:
+            w_sum += w_t
+            prev_w_t = w_t.copy()
+            w_t -= self.learning_rate_.lr_step(t) * f.compute_jacobian(X ,y)
+            f.weights = w_t
+            if f.compute_output(X, y) < best_w[1]:
+                best_w[0] = f.weights.copy()
+                best_w[1] = f.compute_output(X,y)
+            self.callback_(f.compute_output(X, y), w_t.copy(), self.learning_rate_.lr_step(t))
+            t += 1
+
+        print(t)
+        if self.out_type_ == "last":
+            return w_t
+        elif self.out_type_ == "average":
+            return w_sum / t
+        else:
+            return best_w[0]
+
+
+
+
+
